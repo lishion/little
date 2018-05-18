@@ -19,7 +19,7 @@ print( to_num_index('z') )
 # 26
 ```
 
-如果你苦恼于每次都需要更改excel的设置以便使用数字现实列，现在你可以:
+如果你苦恼于每次都需要更改excel的设置以便使用数字显示列，现在你可以:
 
 ```python
 from chrange import to_num_index as tni
