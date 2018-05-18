@@ -17,7 +17,7 @@ def to_chr_index(index,lower=False):
 
     return res
 
-def to_num_index(index):
+def to_num_index(index,offset=0):
     
     sum = 0
     str_index_lower = index.lower()
@@ -26,17 +26,18 @@ def to_num_index(index):
     for i in range(length,-1,-1):
         sum += pow( 26,i )*( ord( str_index_lower[length-i] )-ord('a') + 1 )
 
-    return sum
+    return sum + offset
 
-def crange(start,end,step=1):
+def crange(start,end,step=1,lower=True):
     
     s = to_num_index(start)
     e = to_num_index(end)
 
     for i in range(s,e+1,step):
-        yield to_chr_index(i)
+        yield to_chr_index(i,lower)
 
 if __name__ == "__main__":
-    for x in crange("a","z",2):
-        print(x)
+    for x in crange("t","z",lower=True):
+        print(x,end=' ')
+    print()
 
