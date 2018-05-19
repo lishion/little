@@ -1,37 +1,44 @@
 import json
 import os
  
-cache_file_name = ".mini.cache"
+class mini_cache(object):
+     
+    def __init__(self,filename):
+        self._cache_filename = filename
 
-def is_cache_exist():
-    return os.path.exists(cache_file_name)
+    def __is_cache_exist(self):
+        return os.path.exists(self._cache_filename)
 
-def cache(key,value):
-    if not is_cache_exist():
-        with open(cache_file_name,"w") as f:
-            json.dump({key:value},f)
-    else:
-        with open(cache_file_name,'r') as f:
-            data = json.load(f)
-        data[key] = value
-        with open(cache_file_name,'w') as f:
-            json.dump(data,f)
+    def cache(self,key,value):
+        try:
+            if not self.__is_cache_exist():
+                with open(self._cache_filename,"w") as f:
+                    cache_data = json.dumps({key:value})
+                    f.writelines(cache_data)
+            else:
+                with open(self._cache_filename,'r') as f:
+                    data = json.load(f) or {}
+                data[key] = value
+                with open(self._cache_filename,'w') as f:
+                    cache_data = json.dumps(data)
+                    f.writelines(cache_data)
+        except Exception:
+            raise Exception(f"cache failed")
+        
+    def uncache(self):
+        if not self.__is_cache_exist():
+            raise Exception('no cache file find! ensure you have cached some something')
+        try:
+            with open(self._cache_filename,'r') as f:
+                return  json.load(f)
+        except Exception:
+            raise Exception('parse cache file failed')
+
+    def clear(self):
+        if self.__is_cache_exist():
+            os.remove(self._cache_filename)
+
+    def get(self,key):
+        return self.uncache()[key]
+
     
-def uncache():
-    if not is_cache_exist():
-        raise Exception('no cache file find! ensure you have cached some something!')
-    with open(cache_file_name,'r') as f:
-        return  json.load(f)
-
-def clear():
-    if is_cache_exist():
-        os.remove(cache_file_name)
-
-def get(key):
-    return uncache()[key]
-
-if __name__ == "__main__":
-    clear()
-    cache("num",23423)
-    cache("aaa",123)
-    print(get("num"),get("aaa"))
