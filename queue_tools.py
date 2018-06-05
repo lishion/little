@@ -16,6 +16,7 @@ class resolver(object):
         self.rq = queue.Queue()
         self.wq = queue.Queue()
         self.has_return = has_return
+        self.has_done = 0
  
     # 执行线程
     # 调用该方法前必须调用fetch_data获取数据!!!!
@@ -51,7 +52,7 @@ class resolver(object):
                 return
             try:
                 args = self.rq.get()
-                surplus_num = self.rq.qsize()
+                surplus_num = self.has_done
                 if type(args) == list:
                     o = self.method(surplus_num,*args)
                 elif type(args) == dict:
@@ -63,6 +64,7 @@ class resolver(object):
             except BaseException as e:
                 print(e)
             finally:
+                self.has_done += 1
                 self.rq.task_done()
 
     def __queue_to_list(self,q):
@@ -73,7 +75,6 @@ class resolver(object):
 
 if __name__=="__main__":
     def test(num,param1,param2):
-        print(1)
         return param1 + param2
         
     x = [{"param1":x,"param2":x+1} for x in range(1,1600)]
